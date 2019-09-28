@@ -8,6 +8,8 @@ import random
 import re
 from typing import Dict, List
 
+import click
+
 # Match more than 2+ spaces
 space_pat = re.compile(r"[ ]{2,}")
 
@@ -78,12 +80,37 @@ quotes: List[Dict[str, str]] = [
     },
 ]
 
+clean_quotes: List[str] = [
+    attach_source(clean_text(quote["text"]), quote["source"]) for quote in quotes
+]
 
-def run():
-    clean_quotes: List[str] = [
-        attach_source(clean_text(quote["text"]), quote["source"]) for quote in quotes
-    ]
 
+@click.group()
+def cli():
+    """
+    Quips of wisdom for the terminal
+    """
+    pass
+
+
+@click.command(help="Retrieves one random quote")
+def get() -> None:
     chosen_quote: str = random.choice(clean_quotes)
 
-    print(chosen_quote)
+    click.secho(chosen_quote, fg="green")
+
+
+@click.command(help="Adds a quote to the DB")
+@click.option("--quote", prompt=True)
+def add(quote: str) -> None:
+    source = click.prompt("Source")
+
+    click.echo(quote)
+    click.echo(source)
+
+
+cli.add_command(get)
+cli.add_command(add)
+
+if __name__ == "__main__":
+    cli()

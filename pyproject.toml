@@ -7,12 +7,13 @@ authors = ["Titus Soporan <titus@tsoporan.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 click = "^7.0"
+colorama = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
 
 [tool.poetry.scripts]
-termquotes = 'termquotes.main:run'
+termquotes = 'termquotes.console:run'
 
 [build-system]
 requires = ["poetry>=0.12"]
