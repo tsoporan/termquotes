@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "termquotes"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Titus Soporan <titus@tsoporan.com>"]
 
@@ -13,7 +13,7 @@ colorama = "^0.4.1"
 pytest = "^3.0"
 
 [tool.poetry.scripts]
-termquotes = 'termquotes.console:run'
+termquotes = 'termquotes.console:cli'
 
 [build-system]
 requires = ["poetry>=0.12"]
