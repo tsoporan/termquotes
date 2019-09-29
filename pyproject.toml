@@ -1,8 +1,13 @@
 [tool.poetry]
 name = "termquotes"
-version = "0.3.0"
-description = ""
+version = "0.3.1"
+description = "A little CLI tool to record, categorize and display quotes"
 authors = ["Titus Soporan <titus@tsoporan.com>"]
+license = 'MIT'
+readme = 'README.md'
+repository = "https://github.com/tsoporan/termquotes"
+homepage = "https://github.com/tsoporan/termquotes"
+keywords = ['terminal', 'cli', 'quotes']
 
 [tool.poetry.dependencies]
 python = "^3.7"
