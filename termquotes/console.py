@@ -9,15 +9,18 @@ import sqlite3
 from pathlib import Path
 
 import click
-
-from termquotes.helpers import select_random
+from termquotes.api import add_quote, get_quote_by_id, get_random_quote
 
 
 class TermQuotesConf:
     def __init__(self, db_path):
         self.project_path = Path(__file__).parent
         self.db_path = os.path.join(self.project_path, db_path)
-        self.db = sqlite3.connect(self.db_path)
+
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+
+        self.db = conn
 
 
 @click.group()
@@ -31,11 +34,22 @@ def cli(ctx, db_path="data/quotes.db") -> None:
 
 
 @click.command(help="Retrieves one random quote")
+@click.argument("quote-id", required=False, type=int)
 @click.pass_obj
-def get(conf) -> None:
+def get(conf, quote_id) -> None:
 
-    text, source = select_random(conf.db)
-    full = f"{text} -- {source}"
+    if quote_id:
+        quote = get_quote_by_id(conn=conf.db, quote_id=quote_id)
+
+    else:
+        quote = get_random_quote(conn=conf.db)
+
+    if not quote:
+        click.secho(f"No quote found", fg="yellow")
+
+        return
+
+    full = f"{quote['text']} -- {quote['source']}"
 
     click.secho(full, fg="green")
 
@@ -44,10 +58,15 @@ def get(conf) -> None:
 @click.option("--quote", prompt=True)
 @click.pass_obj
 def add(conf, quote: str) -> None:
-    source = click.prompt("Source")
+    source: str = click.prompt("Source")
 
-    click.echo(quote)
-    click.echo(source)
+    created, err = add_quote(conn=conf.db, text=quote, source=source)
+
+    if created:
+        click.secho(f"Added quote ID: {created}", fg="green")
+
+    else:
+        click.secho(f"Could not add quote: {err}", fg="red")
 
 
 cli.add_command(get)
