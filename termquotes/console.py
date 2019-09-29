@@ -9,6 +9,7 @@ import sqlite3
 from pathlib import Path
 
 import click
+from termquotes import __version__
 from termquotes.api import add_quote, get_quote_by_id, get_random_quote
 
 
@@ -24,6 +25,7 @@ class TermQuotesConf:
 
 
 @click.group()
+@click.version_option(version=__version__)
 @click.pass_context
 def cli(ctx, db_path="data/quotes.db") -> None:
     """
