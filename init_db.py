@@ -15,12 +15,12 @@ create table if not exists quotes (
     id integer primary key,
     text text unique,
     source text,
-    genre text,
+    topic text,
     created timestamp
 )
 """
 insert_sql: str = """
-insert into quotes (text, source, created) values (?, ?, ?)
+insert into quotes (text, source, topic, created) values (?, ?, ?, ?)
 """
 
 
@@ -49,15 +49,20 @@ def load_seeds(conn):
         with open(os.path.join(SEEDS_DIR, file_name)) as f:
             js += json.loads(f.read())
 
+    topic, _ = file_name.split(".")
+
     cur = conn.cursor()
 
     for quote in js:
-        print(quote)
-        cur.execute(insert_sql, (quote["text"], quote["source"], now))
+        print(topic, quote)
+        cur.execute(insert_sql, (quote["text"], quote["source"], topic, now))
 
     conn.commit()
 
 
 if __name__ == "__main__":
     conn = init_db()
+
+    print("Loading ...")
     load_seeds(conn)
+    print("Done")
