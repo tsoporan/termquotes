@@ -30,7 +30,7 @@ class TermQuotesConf:
 @click.pass_context
 def cli(ctx, db_path="data/quotes.db") -> None:
     """
-    Quips of wisdom for the terminal
+    A little CLI tool to record, categorize and display quotes
     """
 
     ctx.obj = TermQuotesConf(db_path=db_path)
@@ -58,10 +58,10 @@ def get(conf, quote_id) -> None:
 
 
 @click.command(help="Adds a quote to the DB")
-@click.option("--quote", prompt=True)
 @click.pass_obj
-def add(conf, quote: str) -> None:
-    source: str = click.prompt("Source")
+def add(conf) -> None:
+    quote: str = click.prompt(click.style("Quote", fg="green"))
+    source: str = click.prompt(click.style("Source", fg="green"))
 
     created, err = add_quote(conn=conf.db, text=quote, source=source)
 
