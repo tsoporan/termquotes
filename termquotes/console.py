@@ -10,7 +10,8 @@ from pathlib import Path
 
 import click
 from termquotes import __version__
-from termquotes.api import add_quote, get_quote_by_id, get_random_quote
+from termquotes.api import (add_quote, get_quote_by_id, get_random_quote,
+                            list_quotes)
 
 
 class TermQuotesConf:
@@ -71,6 +72,25 @@ def add(conf, quote: str) -> None:
         click.secho(f"Could not add quote: {err}", fg="red")
 
 
+@click.command(help="Lists quotes")
+@click.pass_obj
+def ls(conf) -> None:
+
+    quotes = list_quotes(conn=conf.db)
+
+    if not quotes:
+        click.secho(f"No quotes found :(", fg="yellow")
+
+        return
+
+    for quote in quotes:
+        id_part = click.style(f"[{quote['id']}]", bold=True, fg="white")
+        rest = click.style(f"{quote['text']} -- {quote['source']}", fg="green")
+        click.echo(f"{id_part} {rest}")
+        click.secho("-" * 50, fg="blue")
+
+
+cli.add_command(ls)
 cli.add_command(get)
 cli.add_command(add)
 

@@ -4,7 +4,7 @@ Interface for working with quotes
 
 import datetime
 import sqlite3
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 from termquotes.helpers import clean_text
 
@@ -60,3 +60,15 @@ def add_quote(*, conn, text: str, source: str, topic=None) -> Tuple[int, Optiona
         return 0, "Quote text should be unique"
 
     return cur.lastrowid, None
+
+
+def list_quotes(*, conn) -> List[sqlite3.Row]:
+    """
+    Retrieves a list of quotes
+    """
+
+    cur = conn.cursor()
+
+    cur.execute("select id, text, source, topic from quotes order by id desc")
+
+    return cur.fetchall()
